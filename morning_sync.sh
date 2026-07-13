@@ -14,6 +14,10 @@ fi
 LOG_FILE="/var/log/morning_sync.log"
 echo "=== Morning Sync Started at $(date) ===" >> "$LOG_FILE"
 
+# Send start notification
+START_MSG="🚀 *Morning Sync Pipeline Started*"
+curl -s -X POST "https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage" -d chat_id="${TELEGRAM_CHAT_ID}" -d text="${START_MSG}" -d parse_mode="Markdown" > /dev/null
+
 if ! docker info >> "$LOG_FILE" 2>&1; then
     SUMMARY="🚨 Docker daemon is not running! Aborting builds.%0A"
     curl -s -X POST "https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage" -d chat_id="${TELEGRAM_CHAT_ID}" -d text="${SUMMARY}" -d parse_mode="Markdown"

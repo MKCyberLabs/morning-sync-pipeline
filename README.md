@@ -23,7 +23,13 @@ The script iterates through all projects defined in the `PROJECTS` array inside 
    - **Hardened Security**: The AI is strictly bounded by critical rules forbidding destructive operations (e.g., `rm -rf /`), firewall modifications, or unnecessary host-level installations, keeping it focused securely on Docker configuration and safe file patching.
    - **Fail-Safe Parsing**: The AI's JSON output is parsed securely via Python. If the AI hallucinates markdown or invalid JSON, the script cleanly catches the exception and aborts the retry cycle rather than running garbage commands.
    - The script executes the suggested fix and retries the build up to **5 times**.
-8. **Reporting**: It dispatches a concise summary report to your Telegram app, detailing the successful merges and whether the build passed cleanly, succeeded after AI interventions, or failed completely.
+8. **Reporting**: The script manages communication with you via Telegram, bookending the execution with start and end reports.
+
+## Telegram Notifications
+
+To keep you informed without requiring you to manually check server logs, the script utilizes Telegram for live reporting:
+- **Startup Alert**: At the exact moment the cronjob triggers the script, it fires a "🚀 *Morning Sync Pipeline Started*" notification to your device.
+- **Completion Report**: Upon finishing all builds, it delivers a comprehensive final payload detailing the total branches merged per project, and explicitly marking each build status (Clean Success, AI-Intervention Success, or Failure).
 
 ## Observability
 
