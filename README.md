@@ -47,4 +47,7 @@ If you migrate this setup to a new server:
    ```bash
    sudo cp morning_sync.logrotate /etc/logrotate.d/morning_sync
    ```
-4. Set up your cronjob to execute `morning_sync.sh` at your desired interval.
+4. Set up your cronjob to execute the script daily (e.g., at 6:00 AM server time) by adding this exact line to your root crontab (`crontab -e`):
+   ```bash
+   0 6 * * * /opt/automation-scripts/morning-sync/morning_sync.sh
+   ```

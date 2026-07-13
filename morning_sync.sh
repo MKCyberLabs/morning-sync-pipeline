@@ -14,13 +14,29 @@ fi
 LOG_FILE="/var/log/morning_sync.log"
 echo "=== Morning Sync Started at $(date) ===" >> "$LOG_FILE"
 
+# Helper function to send Telegram messages to multiple IDs
+send_telegram_message() {
+    local message="$1"
+    IFS=',' read -ra CHAT_IDS <<< "$TELEGRAM_CHAT_ID"
+    for id in "${CHAT_IDS[@]}"; do
+        # Trim whitespace
+        id=$(echo "$id" | xargs)
+        if [ -n "$id" ]; then
+            curl -s -X POST "https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage" \
+                -d chat_id="$id" \
+                -d text="$message" \
+                -d parse_mode="Markdown" > /dev/null
+        fi
+    done
+}
+
 # Send start notification
 START_MSG="🚀 *Morning Sync Pipeline Started*"
-curl -s -X POST "https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage" -d chat_id="${TELEGRAM_CHAT_ID}" -d text="${START_MSG}" -d parse_mode="Markdown" > /dev/null
+send_telegram_message "$START_MSG"
 
 if ! docker info >> "$LOG_FILE" 2>&1; then
     SUMMARY="🚨 Docker daemon is not running! Aborting builds.%0A"
-    curl -s -X POST "https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage" -d chat_id="${TELEGRAM_CHAT_ID}" -d text="${SUMMARY}" -d parse_mode="Markdown"
+    send_telegram_message "$SUMMARY"
     exit 1
 fi
 
@@ -188,9 +204,6 @@ for item in "${PROJECTS[@]}"; do
 done
 
 # Send Telegram Message
-curl -s -X POST "https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage" \
-    -d chat_id="${TELEGRAM_CHAT_ID}" \
-    -d text="${SUMMARY}" \
-    -d parse_mode="Markdown"
+send_telegram_message "$SUMMARY"
 
 echo "Sync complete."
