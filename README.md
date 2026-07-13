@@ -31,6 +31,8 @@ To keep you informed without requiring you to manually check server logs, the sc
 - **Startup Alert**: At the exact moment the cronjob triggers the script, it fires a "🚀 *Morning Sync Pipeline Started*" notification to your device.
 - **Completion Report**: Upon finishing all builds, it delivers a comprehensive final payload detailing the total branches merged per project, and explicitly marking each build status (Clean Success, AI-Intervention Success, or Failure).
 
+*Note: You can easily broadcast these alerts to your entire team! Simply add multiple comma-separated chat IDs to the `TELEGRAM_CHAT_ID` variable in your `.env` file (e.g., `TELEGRAM_CHAT_ID="1234567,9876543"`).*
+
 ## Observability
 
 All operations (including `stdout` and `stderr` from git, docker, and bash) are recorded in `/var/log/morning_sync.log`.
